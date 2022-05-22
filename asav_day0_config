@@ -1,0 +1,63 @@
+
+interface GigabitEthernet0/0
+ nameif inside
+ no shut
+ip address dhcp 
+ipv6 enable
+ipv6 address 2406:da14:a5b:d501:35b2:a7ce:533:4c52/64
+!
+interface GigabitEthernet0/1
+ nameif outside
+ no shut
+ip address dhcp 
+ipv6 enable
+ipv6 address 2406:da14:a5b:d502:9a1d:a58d:94b8:b02/64
+
+
+
+aaa authentication ssh console LOCAL
+aaa authentication http console LOCAL
+aaa authentication telnet console LOCAL
+ssh 0.0.0.0 0.0.0.0 management
+telnet 0.0.0.0 0.0.0.0 management
+http server enable
+http 0.0.0.0 0.0.0.0 management
+same-security-traffic permit inter-interface
+same-security-traffic permit intra-interface
+
+access-list passall line 10 extended permit tcp any4 any4
+access-list passall line 15 extended deny tcp any4 any4
+access-list passall line 20 extended permit udp any4 any4
+access-list passall line 25 extended deny udp any4 any4
+access-list passall line 30 extended permit tcp any6 any6
+access-list passall line 35 extended deny tcp any6 any6
+access-list passall line 40 extended permit udp any6 any6
+access-list passall line 45 extended deny udp any6 any6
+access-list passall line 50 extended permit icmp any4 any4
+access-list passall line 60 extended permit icmp6 any6 any6
+access-list passall line 65 extended deny icmp6 any6 any6
+access-list passall line 75 extended deny icmp any any
+access-list passall line 80 extended permit ip any6 any6
+access-list passall line 85 extended deny ip any6 any6
+access-list passall line 90 extended permit ip any any
+access-list passall line 95 extended deny ip any any
+
+access-group passall global
+
+ssh ::/0 management
+ssh ::/0 management
+telnet ::/0 management
+http ::/0 management
+call-home 
+profile License 
+destination transport-method http 
+destination address http https://tools.cisco.com/its/service/oddce/services/DDCEService 
+dns domain-lookup management 
+DNS server-group DefaultDNS 
+    name-server 64.102.6.247 
+license smart 
+ feature tier standard 
+throughput level 2G 
+show license all | i Status 
+Debug menu license 25 production 
+license smart register idtoken YTAxMGMwNjUtMDMxYS00NzNkLWI5NTUtNTQ2ODdkOGQ0YjRjLTE2NTk1ODk4%0AMDUyMTN8bU4vQm5uWDFOdWpNL0pZZHRmZ05pcmtxaUpnVWZOWDR2cVljem9L%0AYzNXZz0%3D%0A force 
